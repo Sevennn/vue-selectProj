@@ -14,7 +14,26 @@ import { Card } from 'bootstrap-vue/es/components';
 import { Layout } from 'bootstrap-vue/es/components';
 import { FormRadio } from 'bootstrap-vue/es/components';
 import { FormCheckbox } from 'bootstrap-vue/es/components';
-
+import { Collapse } from 'bootstrap-vue/es/components';
+import { Tabs } from 'bootstrap-vue/es/components';
+import { FormGroup } from 'bootstrap-vue/es/components';
+import { FormTextarea } from 'bootstrap-vue/es/components';
+import { ButtonGroup } from 'bootstrap-vue/es/components';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+import { Tooltip } from 'bootstrap-vue/es/components';
+import { FormFile } from 'bootstrap-vue/es/components';
+import $ from "jquery";
+import "bootstrap-fileinput/js/fileinput.js";
+import "bootstrap-fileinput/themes/fa/theme.js";
+Vue.use(FormFile);
+Vue.use(Tooltip);
+Vue.use(VueAxios, axios)
+Vue.use(ButtonGroup);
+Vue.use(FormTextarea);
+Vue.use(FormGroup);
+Vue.use(Tabs);
+Vue.use(Collapse);
 Vue.use(FormCheckbox);
 Vue.use(FormRadio);
 Vue.use(Layout);
@@ -26,6 +45,10 @@ Vue.use(Button);
 Vue.use(Form);
 Vue.use(Navbar);
 
+require('bootstrap/dist/css/bootstrap.css')
+require('bootstrap-fileinput/css/fileinput.css')
+require('font-awesome/css/font-awesome.css')
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -33,7 +56,7 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
 })
 
 
