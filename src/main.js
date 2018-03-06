@@ -33,6 +33,12 @@ import mavonEditor from 'mavon-editor'
 //                 mavonEditor.markdownIt 
 import 'mavon-editor/dist/css/index.css'
 // use
+
+import { FormSelect } from 'bootstrap-vue/es/components';
+import { Modal } from 'bootstrap-vue/es/components';
+
+Vue.use(Modal);
+Vue.use(FormSelect);
 Vue.use(mavonEditor)
 
 Vue.use(FormFile);

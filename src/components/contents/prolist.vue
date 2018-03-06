@@ -4,12 +4,11 @@
       <b-tabs pills card v-model="tabIndex">
         <b-tab title="single" active>
           <div role="tablist">
-            <b-card no-body class="mb-1" v-for="item in single" :key="item.id">
-              <b-card-header header-tag="header" class="p-1" role="tab">
+          <b-list-group>
+            <b-list-item  v-for="item in single" :key="item.id">
                 <b-btn block href="#" v-b-toggle="item.id" variant="info">{{item.brief}}</b-btn>
-              </b-card-header>
+
               <b-collapse :id="item.id" accordion="my-accordion" role="tabpanel" @show="UpdateMD(item.id)">
-                <b-card-body>
                   <b-container>
                     <b-row class="text-dec">
                       <mavon-editor :ref="item.id" :value="item.text"/>
@@ -24,9 +23,9 @@
                       </b-form-group>
                     </b-row>
                   </b-container>
-                </b-card-body>
               </b-collapse>
-            </b-card>
+            </b-list-item>
+            </b-list-group>
           </div>
         </b-tab>
         <b-tab title="multiple">
@@ -58,9 +57,29 @@
         </b-tab>
       </b-tabs>
     </b-card>
+    <b-button-group>
     <b-button variant="primary">
       生成试题
     </b-button>
+    <b-button variant="primary" v-b-modal.update>
+      修改题目
+    </b-button>
+    </b-button-group>
+    <b-modal id="update" title="选择题目" @ok="showSelect">
+      <b-form>
+      <b-form-group label="Stacked  checkboxes">
+        <b-form-checkbox-group buttons
+                             button-variant='outline-success'
+                             stacked
+                             v-model="select"
+                             size="lg"
+                             style="width:100%"
+                             >
+          <b-form-checkbox v-for="item in (tabIndex == 0? single : multi)" :value="item.id" style="width:100%">{{item.brief}}</b-form-checkbox> 
+        </b-form-checkbox-group>
+      </b-form-group>
+      </b-form>
+    </b-modal>
   </div>
 </template>
 
@@ -69,11 +88,12 @@
   export default {
     data() {
       return {
-        single: [],
+        single: [{id : 1,brief:'aaa'},{id : 2,brief:'aaa'},{id : 3,brief:'aaa'}],
         multi: [],
         tabIndex: 0,
         singleGet: false,
-        multiGet: false
+        multiGet: false,
+        select: []
       }
     },
     beforeRouteEnter(to, from, next) {
@@ -118,6 +138,9 @@
             this.$refs[key][0].$imgUpdateByUrl(i.index, i.data)
           }
         
+      },
+      showSelect(){
+        console.log(this.select)
       }
     },
     watch: {
