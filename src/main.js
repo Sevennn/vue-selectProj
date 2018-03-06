@@ -26,6 +26,15 @@ import { FormFile } from 'bootstrap-vue/es/components';
 import $ from "jquery";
 import "bootstrap-fileinput/js/fileinput.js";
 import "bootstrap-fileinput/themes/fa/theme.js";
+
+import mavonEditor from 'mavon-editor'
+// markdown-it对象：md.s_markdown, md => mavonEditor实例
+//                 or
+//                 mavonEditor.markdownIt 
+import 'mavon-editor/dist/css/index.css'
+// use
+Vue.use(mavonEditor)
+
 Vue.use(FormFile);
 Vue.use(Tooltip);
 Vue.use(VueAxios, axios)

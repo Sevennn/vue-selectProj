@@ -1,67 +1,67 @@
 <template>
-<div>
-  <b-card no-body>
-    <b-tabs pills card v-model="tabIndex">
-      <b-tab title="single" active>
-        <div role="tablist">
-          <b-card no-body class="mb-1" v-for="item in single" :key="item.id">
-            <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-btn block href="#" v-b-toggle="item.id" variant="info">{{item.brief}}</b-btn>
-            </b-card-header>
-            <b-collapse :id="item.id" accordion="my-accordion" role="tabpanel">
-              <b-card-body>
-                <b-container>
-                  <b-row class="text-dec">
-                    <b-form-textarea plaintext no-resize :value="item.text" readonly></b-form-textarea>
-                  </b-row>
-                  <b-row class="sel-row">
-                    <b-form-group>
-                      <b-form-radio-group buttons stacked button-variant="outline-primary" v-model="item.answer">
-                        <b-form-radio v-for="o in item.options" :disabled="o.value != item.answer" :value="o.value" :key="o.text+o.value">
-                          {{o.text}}
-                        </b-form-radio>
-                      </b-form-radio-group>
-                    </b-form-group>
-                  </b-row>
-                </b-container>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
-        </div>
-      </b-tab>
-      <b-tab title="multiple">
-        <div role="tablist">
-          <b-card no-body class="mb-1" v-for="item in multi" :key="item.id">
-            <b-card-header header-tag="header" class="p-1" role="tab">
-              <b-btn block href="#" v-b-toggle="item.id" variant="info">{{item.brief}}</b-btn>
-            </b-card-header>
-            <b-collapse :id="item.id" accordion="my-accordion" role="tabpanel">
-              <b-card-body>
-                <b-container>
-                  <b-row class="text-dec">
-                    <b-form-textarea plaintext no-resize :value="item.text" readonly></b-form-textarea>
-                  </b-row>
-                  <b-row class="sel-row">
-                    <b-form-group>
-                      <b-form-checkbox-group buttons stacked button-variant="outline-primary" v-model="item.answer">
-                        <b-form-checkbox v-for="o in item.options" :disabled="item.answer.indexOf(o.value) == -1" :value="o.value" :key="o.text+o.value">
-                          {{o.text}}
-                        </b-form-checkbox>
-                      </b-form-checkbox-group>
-                    </b-form-group>
-                  </b-row>
-                </b-container>
-              </b-card-body>
-            </b-collapse>
-          </b-card>
-        </div>
-      </b-tab>
-    </b-tabs>
-  </b-card>
-  <b-button variant="primary">
-    生成试题
-  </b-button>
-</div>
+  <div>
+    <b-card no-body>
+      <b-tabs pills card v-model="tabIndex">
+        <b-tab title="single" active>
+          <div role="tablist">
+            <b-card no-body class="mb-1" v-for="item in single" :key="item.id">
+              <b-card-header header-tag="header" class="p-1" role="tab">
+                <b-btn block href="#" v-b-toggle="item.id" variant="info">{{item.brief}}</b-btn>
+              </b-card-header>
+              <b-collapse :id="item.id" accordion="my-accordion" role="tabpanel" @show="UpdateMD(item.id)">
+                <b-card-body>
+                  <b-container>
+                    <b-row class="text-dec">
+                      <mavon-editor :ref="item.id" :value="item.text"/>
+                    </b-row>
+                    <b-row class="sel-row">
+                      <b-form-group>
+                        <b-form-radio-group buttons stacked button-variant="outline-primary" v-model="item.answer">
+                          <b-form-radio v-for="o in item.options" :disabled="o.value != item.answer" :value="o.value" :key="o.text+o.value">
+                            {{o.text}}
+                          </b-form-radio>
+                        </b-form-radio-group>
+                      </b-form-group>
+                    </b-row>
+                  </b-container>
+                </b-card-body>
+              </b-collapse>
+            </b-card>
+          </div>
+        </b-tab>
+        <b-tab title="multiple">
+          <div role="tablist">
+            <b-card no-body class="mb-1" v-for="item in multi" :key="item.id">
+              <b-card-header header-tag="header" class="p-1" role="tab">
+                <b-btn block href="#" v-b-toggle="item.id" variant="info">{{item.brief}}</b-btn>
+              </b-card-header>
+              <b-collapse :id="item.id" accordion="my-accordion" role="tabpanel">
+                <b-card-body>
+                  <b-container>
+                    <b-row class="text-dec">
+                      <b-form-textarea plaintext no-resize :value="item.text" readonly></b-form-textarea>
+                    </b-row>
+                    <b-row class="sel-row">
+                      <b-form-group>
+                        <b-form-checkbox-group buttons stacked button-variant="outline-primary" v-model="item.answer">
+                          <b-form-checkbox v-for="o in item.options" :disabled="item.answer.indexOf(o.value) == -1" :value="o.value" :key="o.text+o.value">
+                            {{o.text}}
+                          </b-form-checkbox>
+                        </b-form-checkbox-group>
+                      </b-form-group>
+                    </b-row>
+                  </b-container>
+                </b-card-body>
+              </b-collapse>
+            </b-card>
+          </div>
+        </b-tab>
+      </b-tabs>
+    </b-card>
+    <b-button variant="primary">
+      生成试题
+    </b-button>
+  </div>
 </template>
 
 <script>
@@ -71,7 +71,7 @@
       return {
         single: [],
         multi: [],
-        tabIndex : 0,
+        tabIndex: 0,
         singleGet: false,
         multiGet: false
       }
@@ -93,7 +93,7 @@
       bus.$emit('Prolist', true);
       this.GetSingle();
     },
-    methods : {
+    methods: {
       GetSingle() {
         if (this.singleGet) return;
         this.axios.get("/api/single/get/all").then((response) => {
@@ -103,16 +103,26 @@
       },
       GetMulti() {
         if (this.multiGet) return;
-        this.axios.get("/api/multi/get/all").then((response)=>{
+        this.axios.get("/api/multi/get/all").then((response) => {
           this.multi = response.data
           this.multiGet = true;
           console.log(this.multi)
         })
+      },
+      UpdateMD(key) {
+        console.log(this.$refs)
+          let ind = this.single.findIndex((x) => {
+            return x.id == key
+          })
+          for (let i of this.single[ind].images) {
+            this.$refs[key][0].$imgUpdateByUrl(i.index, i.data)
+          }
+        
       }
     },
     watch: {
-      tabIndex(val, oldval){
-        if (val ==0) this.GetSingle();
+      tabIndex(val, oldval) {
+        if (val == 0) this.GetSingle();
         else this.GetMulti();
       }
     }

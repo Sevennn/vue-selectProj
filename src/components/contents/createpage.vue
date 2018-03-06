@@ -1,13 +1,9 @@
 <template>
   <div>
     <b-container class="margin-ctr">
-      <div class="file-loading">
-    <input id="input-fa" name="input-fa[]" type="file" multiple>
-</div>
-      <b-form class="form-border" v-for="(i,ind) in pros.Single" :key="i.id" title="This is a Single">
+      <b-form class="form-border" v-for="(i,ind) in pros.Single" :key="i.id">
         <b-form-group>
-          <b-form-textarea placeholder="Enter something" :rows="3" :max-rows="6" v-model="i.text">
-          </b-form-textarea>
+          <mavon-editor :ref="'v'+ind" v-model="i.text" @imgDel="(pos)=>{i.images.splice(i.images.findIndex((x)=>{return x.ind == pos}))}" @imgAdd="(pos,file)=>{i.images.push({name:file.name, data:file.miniurl, index:pos}); }"/>
         </b-form-group>
         <b-form-group>
           <b-form-textarea placeholder="请为此题提供有效的简介, 如考点, 类型等" :rows="3" :max-rows="6" v-model="i.brief">
@@ -94,7 +90,7 @@
 
 
 <script>
-  
+
   export default {
     data() {
       return {
@@ -105,12 +101,7 @@
         count: 0
       }
     },
-    mounted() {
-      $("#input-fa").fileinput({
-          theme: "fa",
-          uploadUrl: "/file-upload-batch/2"
-      });
-    },
+
     methods: {
       AddSinglePro() {
         this.pros.Single.push({
@@ -118,7 +109,8 @@
           options: [],
           answer: ``,
           brief: ``,
-          id: this.count++
+          id: this.count++,
+          images: [],
         })
       },
       DelSinglePro(x) {
@@ -149,6 +141,7 @@
         this.pros.Multi[ind].options.splice(x, 1);
       },
       UploadSingle() {
+        console.log(this.$refs)
         return this.axios.post("/api/create/single", this.pros.Single)
       },
       UploadMulti() {
@@ -162,6 +155,9 @@
             console.log(response)
           }
         )
+      },
+      $imgAdd(pos, $file) {
+        return pos
       }
     }
   }
