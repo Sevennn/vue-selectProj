@@ -2,6 +2,7 @@
   <div>
     <b-container class="margin-ctr">
       <b-form class="form-border" v-for="(i,ind) in pros.Single" :key="i.id">
+        <label class="sel-type">Single</label>
         <b-form-group>
           <mavon-editor :ref="'v'+ind" v-model="i.text" @imgDel="(pos)=>{i.images.splice(i.images.findIndex((x)=>{return x.ind == pos}))}" @imgAdd="(pos,file)=>{i.images.push({name:file.name, data:file.miniurl, index:pos}); }"/>
         </b-form-group>
@@ -121,6 +122,7 @@
           id: this.count++,
           type: ``,
           images: [],
+          answertype: `single`
         })
       },
       DelSinglePro(x) {
@@ -138,7 +140,10 @@
           options: [],
           answer: [],
           brief: ``,
-          id: this.count++
+          id: this.count++,
+          type: ``,
+          images: [],
+          answertype: `multi`
         })
       },
       DelMultiPro(x) {
@@ -183,5 +188,10 @@
   .form-border {
     border: solid #f7f7f9;
   }
-
+  .sel-type {
+    display: inline-block;
+    font-size: 2em;
+    text-align: center;
+    width:100%
+  }
 </style>

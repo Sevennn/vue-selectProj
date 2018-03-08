@@ -26,7 +26,7 @@ import { FormFile } from 'bootstrap-vue/es/components';
 import $ from "jquery";
 import "bootstrap-fileinput/js/fileinput.js";
 import "bootstrap-fileinput/themes/fa/theme.js";
-
+import store from "./store/index"
 import mavonEditor from 'mavon-editor'
 // markdown-it对象：md.s_markdown, md => mavonEditor实例
 //                 or
@@ -36,6 +36,13 @@ import 'mavon-editor/dist/css/index.css'
 
 import { FormSelect } from 'bootstrap-vue/es/components';
 import { Modal } from 'bootstrap-vue/es/components';
+import { Table } from 'bootstrap-vue/es/components';
+import { Pagination } from 'bootstrap-vue/es/components';
+import { InputGroup } from 'bootstrap-vue/es/components';
+
+Vue.use(InputGroup);
+Vue.use(Pagination);
+Vue.use(Table);
 
 Vue.use(Modal);
 Vue.use(FormSelect);
@@ -70,6 +77,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
 })
