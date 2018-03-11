@@ -39,7 +39,9 @@ import { Modal } from 'bootstrap-vue/es/components';
 import { Table } from 'bootstrap-vue/es/components';
 import { Pagination } from 'bootstrap-vue/es/components';
 import { InputGroup } from 'bootstrap-vue/es/components';
+import { Alert } from 'bootstrap-vue/es/components';
 
+Vue.use(Alert);
 Vue.use(InputGroup);
 Vue.use(Pagination);
 Vue.use(Table);

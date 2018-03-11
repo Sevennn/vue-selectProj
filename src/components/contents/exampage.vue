@@ -1,46 +1,53 @@
 <template>
   <div>
-    <h3>Title</h3>
-    <div class="sel-container">
-      <h4>Single</h4>
-      <b-list-group>
-        <b-list-group-item>
-          <b-container>
-            <b-row>
-              <b-img src="https://lorempixel.com/300/150/" center fluid blank-color="#777" alt="img" class="img-div" />
-              <!-- <b-img src="https://lorempixel.com/300/150/" center fluid blank-color="#777" alt="img" class="img-div"/> -->
-            </b-row>
-            <b-row class="text-dec">
-              <b-form-textarea plaintext no-resize>This is some text.\nIt is read only and doesn't look like an input.</b-form-textarea>
-            </b-row>
-            <b-row class="sel-row">
-              <b-form-group label="Button style radios">
-                <b-form-radio-group buttons stacked button-variant="outline-primary" v-model="selected" :options="options" />
-              </b-form-group>
-            </b-row>
-          </b-container>
-        </b-list-group-item>
-      </b-list-group>
-      <h4>Multiple</h4>
-      <b-list-group>
-        <b-list-group-item>
-          <b-container>
-            <b-row>
-              <b-img src="https://lorempixel.com/300/150/" center fluid blank-color="#777" alt="img" class="img-div" />
-              <!-- <b-img src="https://lorempixel.com/300/150/" center fluid blank-color="#777" alt="img" class="img-div"/> -->
-            </b-row>
-            <b-row class="text-dec">
-              <b-form-textarea plaintext no-resize>This is some text.\nIt is read only and doesn't look like an input.</b-form-textarea>
-            </b-row>
-            <b-row class="sel-row">
-              <b-form-group label="Stacked (vertical) button style checkboxes">
-                <b-form-checkbox-group buttons button-variant="outline-primary" v-model="selected" stacked :options="options">
-                </b-form-checkbox-group>
-              </b-form-group>
-            </b-row>
-          </b-container>
-        </b-list-group-item>
-      </b-list-group>
+    <b-container>
+      <b-row>
+        <h1 style="text-align:center;">{{exam.title}}</h1>
+      </b-row>
+      <b-row>
+        <b-container>
+          <b-row v-for="i in exam.single" :key="i.id">
+            <b-container :class="{ 'text-dec':true, 'wrong-answer': !i.bingo }">
+              <b-row>
+                <mavon-editor :value="i.text" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="mk-area" :ref="i.id"
+                  @change="UpdateMD(i)"></mavon-editor>
+              </b-row>
+              <b-row class="sel-row">
+                <b-form-group>
+                  <b-form-radio-group buttons stacked button-variant="outline-primary" v-model="i.examAnswer" :options="i.options" />
+                </b-form-group>
+              </b-row>
+              <b-row class="check-row" v-if="i.check">
+                <b-alert show :variant="i.bingo?'primary':'danger'">Answer: {{i.answer}}</b-alert>
+              </b-row>
+            </b-container>
+          </b-row>
+        </b-container>
+      </b-row>
+      <b-row>
+        <b-container>
+          <b-row v-for="i in exam.multi" :key="i.id">
+            <b-container :class="{ 'text-dec':true, 'wrong-answer': !i.bingo }">
+              <b-row>
+                <mavon-editor :value="i.text" :subfield="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="mk-area" :ref="i.id"
+                  @change="UpdateMD(i)"></mavon-editor>
+              </b-row>
+              <b-row class="sel-row">
+                <b-form-group>
+                  <b-form-checkbox-group buttons stacked button-variant="outline-primary" v-model="i.examAnswer" :options="i.options" />
+                </b-form-group>
+              </b-row>
+              <b-row class="check-row" v-if="i.check">
+                <b-alert show :variant="i.bingo?'primary':'danger'">Answer: {{i.answer.sort()}}</b-alert>
+              </b-row>
+            </b-container>
+          </b-row>
+        </b-container>
+      </b-row>
+    </b-container>
+    <div  class="judge-control">
+    <b-button @click="CheckAnswer" size="lg" variant="outline-success">{{check?'重做':'批改'}}</b-button>
+        <b-button @click="$router.go(-1)" size="lg" variant="outline-warning">返回</b-button>
     </div>
   </div>
 </template>
@@ -49,37 +56,63 @@
   export default {
     data() {
       return {
-        input: `# Hello`,
-        options: [{
-            text: 'Radio 1asdasasfaf',
-            value: 'radio1'
-          },
-          {
-            text: 'Radio 2',
-            value: 'radio2'
-          },
-          {
-            text: 'Radio 3',
-            value: 'radio3'
-          },
-          {
-            text: 'Radio 4',
-            value: 'radio4'
-          }
-        ]
+        exam: {},
+        check: false,
       }
     },
-    computed: {
-      compiledMarkdown: function () {
-        return marked(this.input, {
-          sanitize: true
-        })
-      }
+    created() {
+      this.FetchData()
     },
     methods: {
-      update: _.debounce(function (e) {
-        this.input = e.target.value
-      }, 300)
+      FetchData() {
+        this.axios.get("/api/exam/get/" + this.$route.query.id).then(
+          (r) => {
+            console.log(r)
+            this.exam = r.data
+            console.log(this.exam.single)
+            for (let item of this.exam.single) {
+              item.examAnswer = ""
+              item.bingo = true;
+              item.check = false;
+            }
+            for (let item of this.exam.multi) {
+              item.examAnswer = []
+              item.bingo = true;
+              item.check = false;
+            }
+          })
+      },
+      UpdateMD(item) {
+        if (item.answertype == "single") {
+          let ind = this.exam.single.findIndex((x) => {
+            return x.id == item.id
+          })
+          let mk = this.$refs[item.id][0];
+          for (let i of this.exam.single[ind].images) {
+            mk.$imgUpdateByUrl(i.index, i.data)
+          }
+        } else {
+          let ind = this.exam.multi.findIndex((x) => {
+            return x.id == item.id
+          })
+          let mk = this.$refs[item.id][0];
+          for (let i of this.exam.multi[ind].images) {
+            mk.$imgUpdateByUrl(i.index, i.data)
+          }
+        }
+      },
+      CheckAnswer() {
+        for (let item of this.exam.single) {
+          item.bingo = (item.answer == item.examAnswer);
+          item.check = true;
+        }
+        for (let item of this.exam.multi) {
+          item.bingo = (item.answer.sort().toString() == item.examAnswer.sort().toString());
+
+          item.check = true;
+        }
+        this.check = true;
+      }
     }
   }
 
@@ -95,21 +128,49 @@
     margin: 10px;
   }
 
+  .float-control {
+    text-align: left;
+  }
+
   .text-dec {
     margin: 1rem -15px 0;
-    padding: 1.5rem;
+    padding-top: 30px;
     border: solid #f7f7f9;
+  }
+
+  .sel-row {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid gray;
+  }
+
+  .check-row {
+    padding-bottom: 30px;
+    border-bottom: 2px solid gray;
   }
 
   h3 {
     text-align: center;
   }
 
-  .sel-row {
-    margin: 10px 0;
-  }
   h4 {
     text-align: center;
     margin: 10px 0;
   }
+
+  .mk-area {
+    margin: 0 auto;
+    z-index: 0
+  }
+
+  .judge-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .wrong-answer {
+    border: 2px solid red;
+  }
+
 </style>

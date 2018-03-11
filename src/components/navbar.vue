@@ -8,7 +8,7 @@
       <b-collapse is-nav id="nav_collapse">
 
         <b-navbar-nav>
-          <b-nav-item to="/sel/selectlist" tag="b-nav-item">选择题</b-nav-item>
+          <b-nav-item to="/sel/selectlist" tag="b-nav-item">选择题试卷</b-nav-item>
           <b-nav-item to="/sel/prolist" tag="b-nav-item">题库</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto" v-if="prolist">

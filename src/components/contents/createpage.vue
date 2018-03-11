@@ -4,7 +4,7 @@
       <b-form class="form-border" v-for="(i,ind) in pros.Single" :key="i.id">
         <label class="sel-type">Single</label>
         <b-form-group>
-          <mavon-editor :ref="'v'+ind" v-model="i.text" @imgDel="(pos)=>{i.images.splice(i.images.findIndex((x)=>{return x.ind == pos}))}" @imgAdd="(pos,file)=>{i.images.push({name:file.name, data:file.miniurl, index:pos}); }"/>
+          <mavon-editor :ref="'v'+i.id" v-model="i.text" @imgDel="(pos)=>{i.images.splice(i.images.findIndex((x)=>{return x.ind == pos}))}" @imgAdd="(pos,file)=>{i.images.push({name:file.name, data:file.miniurl, index:pos}); }"/>
         </b-form-group>
         <b-form-group>
           <b-form-textarea placeholder="请为此题提供有效的简介, 如考点, 类型等" :rows="3" :max-rows="6" v-model="i.brief">
@@ -12,7 +12,7 @@
 
         </b-form-group>
         <b-form-group label="请选择题目类型">
-          <b-form-radio-group id="radios1" v-model="i.type" :options="types" name="radioOpenions">
+          <b-form-radio-group v-model="i.type" :options="types" name="radioOpenions">
           </b-form-radio-group>
         </b-form-group>
         <b-form-group>
@@ -45,14 +45,19 @@
           </b-button>
         </b-form-group>
       </b-form>
-      <b-form class="form-border" v-for="(i,ind) in pros.Multi" :key="i.id" title="This is a Multi">
+      <b-form class="form-border" v-for="(i,ind) in pros.Multi" :key="i.id">
+        <label class="sel-type">Multi</label>
         <b-form-group>
-          <b-form-textarea placeholder="Enter something" :rows="3" :max-rows="6" v-model="i.text">
-          </b-form-textarea>
+          <mavon-editor :ref="'v'+i.id" v-model="i.text" @imgDel="(pos)=>{i.images.splice(i.images.findIndex((x)=>{return x.ind == pos}))}" @imgAdd="(pos,file)=>{i.images.push({name:file.name, data:file.miniurl, index:pos}); }"/>
         </b-form-group>
         <b-form-group>
           <b-form-textarea placeholder="请为此题提供有效的简介, 如考点, 类型等" :rows="3" :max-rows="6" v-model="i.brief">
           </b-form-textarea>
+
+        </b-form-group>
+        <b-form-group label="请选择题目类型">
+          <b-form-radio-group  v-model="i.type" :options="types" name="radioOpenions">
+          </b-form-radio-group>
         </b-form-group>
         <b-form-group>
           <b-list-group>
@@ -122,7 +127,7 @@
           id: this.count++,
           type: ``,
           images: [],
-          answertype: `single`
+          answertype:`single`
         })
       },
       DelSinglePro(x) {
@@ -143,7 +148,7 @@
           id: this.count++,
           type: ``,
           images: [],
-          answertype: `multi`
+          answertype:`multi`
         })
       },
       DelMultiPro(x) {
@@ -156,7 +161,7 @@
         this.pros.Multi[ind].options.splice(x, 1);
       },
       UploadSingle() {
-        console.log(this.$refs)
+        console.log(this.pros.Single)
         return this.axios.post("/api/create/single", this.pros.Single)
       },
       UploadMulti() {
@@ -173,7 +178,8 @@
       },
       $imgAdd(pos, $file) {
         return pos
-      }
+      },
+      
     }
   }
 
@@ -194,4 +200,5 @@
     text-align: center;
     width:100%
   }
+
 </style>

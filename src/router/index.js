@@ -19,5 +19,8 @@ export default new Router({
         { path: '/sel/create/pro', component: createPage },
       ]
     },
+    {
+      path: '/sel/exam',component: examPage
+    },
   ]
 })
