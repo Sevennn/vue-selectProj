@@ -1,6 +1,7 @@
 # select-try
 
-> A Vue.js project
+> A Vue.js project for learning Vue.js
+> Using Vue+Vue-Route+Vuex+Bootstrap@4.0
 
 ## Build Setup
 
@@ -20,19 +21,11 @@ npm run build --report
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## What it can do
 
+1. You can create a multiple-choice or single-choice question with images, code, or any things that markdown support
+2. Create a exam bases on the problems we have
+3. Judge you answer
 
-### 数据格式
-```
-Single:
-{
-    text: `some word`,
-    options: [
-        {
-            text: `some word`,
-            value: `A`
-        }, 
-        ...
-    ]
-}
-```
+### [BackStage For it](https://github.com/Sevennn/BackstageForSelect)
+
