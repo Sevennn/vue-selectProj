@@ -7,6 +7,7 @@ import navbar from '@/components/navbar'
 import mainPage from '@/components/mainpage'
 import createPage from '@/components/contents/createpage'
 import loginPage from '@/components/loginpage'
+import ePage from '@/components/notfound'
 Vue.use(Router)
 
 export default new Router({
@@ -26,5 +27,8 @@ export default new Router({
     {
       path: '/sel/exam',component: examPage
     },
+    {
+      path: '*',redirect: '/login'
+    }
   ]
 })
