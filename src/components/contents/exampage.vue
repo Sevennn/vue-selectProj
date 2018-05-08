@@ -40,7 +40,7 @@
                 </b-form-group>
               </b-row>
               <b-row class="check-row" v-if="i.check">
-                <b-alert show :variant="i.bingo?'primary':'danger'">Answer: {{i.answer.sort()}}</b-alert>
+                <b-alert show :variant="i.bingo?'primary':'danger'">Answer: {{i.answer}}</b-alert>
               </b-row>
             </b-container>
           </b-row>
@@ -48,7 +48,7 @@
       </b-row>
     </b-container>
     <div  class="judge-control">
-        <b-button @click="CheckAnswer" size="lg" variant="outline-success">{{check?'重做':'批改'}}</b-button>
+        <b-button @click.prevent="CheckAnswer" size="lg" variant="outline-success">{{check?'重做':'批改'}}</b-button>
         <b-button @click="$router.go(-1)" size="lg" variant="outline-warning">返回</b-button>
     </div>
   </div>
@@ -66,7 +66,6 @@
       }
     },
     created() {
-      console.log(this.$route.query.id)
       this.FetchData()
     },
     methods: {

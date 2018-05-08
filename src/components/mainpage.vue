@@ -9,7 +9,6 @@
 
 <script>
 import navbar from './navbar'
-import bus from './briges/bus.js'
 export default {
   components : {
       navbar,

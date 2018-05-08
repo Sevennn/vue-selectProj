@@ -1,7 +1,7 @@
 <template>
   <div id="sel-list">
       <b-list-group v-if="items.length">
-        <b-list-group-item class="flex-column align-items-start" variant="dark" v-for="item in items" :key="item.id" style="cursor:pointer;" @click="$router.push({path:'/sel/exam', query:{id:item.id}})">
+        <b-list-group-item class="flex-column align-items-start" variant="dark" v-for="item in items" :key="item.id" style="cursor:pointer;" @click="$router.push({path:'/exam', query:{id:item.id}})">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{item.title}}</h5>
           </div>
