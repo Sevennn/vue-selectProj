@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-container>
+    <b-container class="content-area">
       <b-row>
         <h1 style="text-align:center;width:100%;">{{exam.title}}</h1>
       </b-row>
@@ -35,7 +35,7 @@
                   @change="UpdateMD(i)"></mavon-editor>
               </b-row>
               <b-row class="sel-row">
-                <b-form-group>
+                <b-form-group  class="btn-beautify">
                   <b-form-checkbox-group buttons stacked button-variant="outline-primary" v-model="i.examAnswer" :options="i.options" />
                 </b-form-group>
               </b-row>
@@ -48,7 +48,7 @@
       </b-row>
     </b-container>
     <div  class="judge-control">
-    <b-button @click="CheckAnswer" size="lg" variant="outline-success">{{check?'重做':'批改'}}</b-button>
+        <b-button @click="CheckAnswer" size="lg" variant="outline-success">{{check?'重做':'批改'}}</b-button>
         <b-button @click="$router.go(-1)" size="lg" variant="outline-warning">返回</b-button>
     </div>
   </div>
@@ -155,7 +155,9 @@
   .float-control {
     text-align: left;
   }
-
+  .content-area {
+    padding-bottom:30px;
+  }
   .text-dec {
     margin: 1rem -15px 0;
     padding-top: 30px;

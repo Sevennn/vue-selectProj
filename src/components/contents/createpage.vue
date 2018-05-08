@@ -173,8 +173,10 @@
         ).then(
           (response)=>{
             console.log(response)
+            alert("Success!")
+            this.$router.push({path:'/sel/selectlist'})
           }
-        )
+        ).catch(e=>alert(e))
       },
       $imgAdd(pos, $file) {
         return pos

@@ -90,7 +90,7 @@
               </b-table>
               <b-row>
                 <b-col md="6" class="my-1">
-                  <b-pagination :total-rows="single.length" :per-page="perPage" v-model="currentPage" class="my-0" />
+                  <b-pagination :total-rows="multi.length" :per-page="perPage" v-model="currentPage" class="my-0" />
                 </b-col>
               </b-row>
             </b-container>
@@ -99,7 +99,7 @@
       </b-tabs>
     </b-card>
     <b-button-group>
-      <b-button variant="primary" v-b-modal.create :disabled="!examselect.single.length" @click="ConfirmExam()">
+      <b-button variant="primary" v-b-modal.create :disabled="!examselect.single.length && !examselect.multi.length" @click="ConfirmExam()">
         生成试题
       </b-button>
     </b-button-group>
@@ -240,7 +240,7 @@
         this.axios.get("/api/single/get/all").then((response) => {
           this.single = response.data == null ? [] : response.data;
           this.singleGet = true;
-          console.log(this.single[0].id)
+
         })
       },
       SetUpdate(x) {
@@ -251,7 +251,7 @@
         this.axios.get("/api/multi/get/all").then((response) => {
           this.multi =  response.data == null ? [] : response.data;
           this.multiGet = true;
-          console.log(this.multi)
+          console.log(response)
         })
       },
       UpdateMD(item) {
@@ -313,8 +313,10 @@
         this.axios.post("/api/exam/create", {title: this.examselect.title, problems: this.examselect.single.concat(this.examselect.multi)}).then(
           r=>{
             console.log(r);
+            alert("success!")
+            this.$router.push({path:'/sel/selectlist'})
           }
-        )
+        ).catch(e=>alert(e))
       }
     },
     watch: {
