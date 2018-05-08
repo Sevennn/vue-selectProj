@@ -21,7 +21,7 @@
               <b-container>
                 <b-row>
                   <b-col>
-                    <b-textarea v-model="o.text"></b-textarea>
+                    <b-textarea v-model="o.text" @input="o.value=o.text"></b-textarea>
                   </b-col>
                   <b-col>
                     <b-button variant="danger" @click="()=>DelSingleOpt(ind,inde)">Delete</b-button> 
@@ -65,7 +65,7 @@
               <b-container>
                 <b-row>
                   <b-col>
-                    <b-textarea v-model="o.text"></b-textarea>
+                    <b-textarea v-model="o.text" @input="o.value=o.text"></b-textarea>
                   </b-col>
                   <b-col>
                     <b-button variant="danger" @click="()=>DelMultiOpt(ind,inde)">Delete</b-button> 
@@ -134,7 +134,7 @@
         this.pros.Single.splice(x, 1);
       },
       AddSingleOpt(ind) {
-        this.pros.Single[ind].options.push({text:``, value: String.fromCharCode((65+this.pros.Single[ind].options.length)), id: this.count++});
+        this.pros.Single[ind].options.push({text:``, value:``,id: this.count++});
       },
       DelSingleOpt(ind, x) {
         this.pros.Single[ind].options.splice(x, 1);
@@ -155,7 +155,7 @@
         this.pros.Multi.splice(x, 1);
       },
       AddMultiOpt(ind) {
-        this.pros.Multi[ind].options.push({text:``, value: String.fromCharCode((65+this.pros.Multi[ind].options.length)), id:this.count++});
+        this.pros.Multi[ind].options.push({text:``, value: ``, id:this.count++});
       },
       DelMultiOpt(ind, x) {
         this.pros.Multi[ind].options.splice(x, 1);

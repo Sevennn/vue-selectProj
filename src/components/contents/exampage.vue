@@ -2,9 +2,10 @@
   <div>
     <b-container>
       <b-row>
-        <h1 style="text-align:center;">{{exam.title}}</h1>
+        <h1 style="text-align:center;width:100%;">{{exam.title}}</h1>
       </b-row>
       <b-row>
+        <h3 style="text-align:center;width:100%;">Single</h3>
         <b-container>
           <b-row v-for="i in exam.single" :key="i.id">
             <b-container :class="{ 'text-dec':true, 'wrong-answer': !i.bingo }">
@@ -13,7 +14,7 @@
                   @change="UpdateMD(i)"></mavon-editor>
               </b-row>
               <b-row class="sel-row">
-                <b-form-group>
+                <b-form-group  class="btn-beautify">
                   <b-form-radio-group buttons stacked button-variant="outline-primary" v-model="i.examAnswer" :options="i.options" />
                 </b-form-group>
               </b-row>
@@ -24,7 +25,8 @@
           </b-row>
         </b-container>
       </b-row>
-      <b-row>
+      <b-row v-if="this.exam.multi">
+        <h3>Multi</h3>
         <b-container>
           <b-row v-for="i in exam.multi" :key="i.id">
             <b-container :class="{ 'text-dec':true, 'wrong-answer': !i.bingo }">
@@ -52,6 +54,9 @@
   </div>
 </template>
 
+
+
+
 <script>
   export default {
     data() {
@@ -61,26 +66,33 @@
       }
     },
     created() {
+      console.log(this.$route.query.id)
       this.FetchData()
     },
     methods: {
       FetchData() {
+        console.log("Send Get")
         this.axios.get("/api/exam/get/" + this.$route.query.id).then(
           (r) => {
-            console.log(r)
             this.exam = r.data
-            console.log(this.exam.single)
-            for (let item of this.exam.single) {
-              item.examAnswer = ""
-              item.bingo = true;
-              item.check = false;
-            }
-            for (let item of this.exam.multi) {
-              item.examAnswer = []
-              item.bingo = true;
-              item.check = false;
-            }
+            this.InitExam()
           })
+      },
+      InitExam() {
+        if (this.exam.single) {
+          for (let item of this.exam.single) {
+            item.examAnswer = ""
+            item.bingo = true;
+            item.check = false;
+          }
+        }
+        if (this.exam.multi) {
+          for (let item of this.exam.multi) {
+            item.examAnswer = []
+            item.bingo = true;
+            item.check = false;
+          }
+        }
       },
       UpdateMD(item) {
         if (item.answertype == "single") {
@@ -102,14 +114,23 @@
         }
       },
       CheckAnswer() {
-        for (let item of this.exam.single) {
-          item.bingo = (item.answer == item.examAnswer);
-          item.check = true;
+        if (this.check) {
+          this.check = false;
+          this.InitExam();
+          return;
         }
-        for (let item of this.exam.multi) {
-          item.bingo = (item.answer.sort().toString() == item.examAnswer.sort().toString());
-
-          item.check = true;
+        if (this.exam.single) {
+          for (let item of this.exam.single) {
+            item.bingo = (item.answer == item.examAnswer);
+            item.check = true;
+          }
+        }
+        if (this.exam.multi) {
+          for (let item of this.exam.multi) {
+            item.bingo = (item.answer.sort().toString() == item.examAnswer.sort().toString());
+  
+            item.check = true;
+          }
         }
         this.check = true;
       }
@@ -119,6 +140,9 @@
 </script>
 
 <style scoped>
+ .btn-beautify, .btn-beautify *{
+   width: 100%
+ }
   .sel-container {
     width: 75%;
     margin: auto;

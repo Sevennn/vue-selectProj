@@ -3,11 +3,17 @@ import Vue from 'vue'
 Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
-        updateselect : []
+        updateselect : [],
+        role: null,
+        token: ``
     },
     mutations: {
         getupdate (state, data) {
             state.updateselect = data
+        },
+        SetTokenRole(state,t) {
+            state.role = t.role
+            state.token = t.token
         }
     }
   })

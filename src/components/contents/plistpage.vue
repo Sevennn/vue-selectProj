@@ -45,11 +45,6 @@
                 <b-col md="6" class="my-1">
                   <b-pagination :total-rows="single.length" :per-page="perPage" v-model="currentPage" class="my-0" />
                 </b-col>
-                <b-col md="6" class="my-1">
-                  <b-form-group horizontal label="Per page" class="mb-0">
-                    <b-form-select :options="pageOptions" v-model="perPage" />
-                  </b-form-group>
-                </b-col>
               </b-row>
             </b-container>
           </template>
@@ -96,11 +91,6 @@
               <b-row>
                 <b-col md="6" class="my-1">
                   <b-pagination :total-rows="single.length" :per-page="perPage" v-model="currentPage" class="my-0" />
-                </b-col>
-                <b-col md="6" class="my-1">
-                  <b-form-group horizontal label="Per page" class="mb-0">
-                    <b-form-select :options="pageOptions" v-model="perPage" />
-                  </b-form-group>
                 </b-col>
               </b-row>
             </b-container>
@@ -192,7 +182,6 @@
 </template>
 
 <script>
-  import bus from '../briges/bus.js'
   export default {
     data() {
       return {
@@ -218,8 +207,7 @@
           title: ``,
         },
         currentPage: 1,
-        perPage: 5,
-        pageOptions: [3, 5, 10],
+        perPage: 10,
         fields: [{
             key: 'brief',
             sortable: true
@@ -239,34 +227,20 @@
         ],
         sortBy: null,
         sortDesc: false,
-        filter: null,
+        role : null
 
       }
     },
-    beforeRouteEnter(to, from, next) {
-      // 在渲染该组件的对应路由被 confirm 前调用
-      // 不！能！获取组件实例 `this`
-      // 因为当守卫执行前，组件实例还没被创建
-      bus.$emit('Prolist', true);
-      next();
-    },
-    beforeRouteLeave(to, from, next) {
-      // 导航离开该组件的对应路由时调用
-      // 可以访问组件实例 `this`
-      bus.$emit('Prolist', false);
-      next();
-    },
     created() {
-      bus.$emit('Prolist', true);
       this.GetSingle();
     },
     methods: {
       GetSingle() {
         if (this.singleGet) return;
         this.axios.get("/api/single/get/all").then((response) => {
-          this.single = response.data;
+          this.single = response.data == null ? [] : response.data;
           this.singleGet = true;
-          console.log(this.single)
+          console.log(this.single[0].id)
         })
       },
       SetUpdate(x) {
@@ -275,7 +249,7 @@
       GetMulti() {
         if (this.multiGet) return;
         this.axios.get("/api/multi/get/all").then((response) => {
-          this.multi = response.data
+          this.multi =  response.data == null ? [] : response.data;
           this.multiGet = true;
           console.log(this.multi)
         })
@@ -300,8 +274,17 @@
         }
       },
       showSelect() {
-        this.$store.commit('getupdate', this.select)
-        this.$router.push('/sel/update/pro')
+        // this.$store.commit('getupdate', this.select)
+        // this.$router.push('/sel/update/pro')
+        if (this.tabIndex == 0) {
+          this.axios.post('/api/update/single/id',this.updateitem).then(r=>{
+            console.log(r)
+          }).catch(r=>alert(r))
+        } else {
+          this.axios.post('/api/update/multi/id',this.updateitem).then(r=>{
+            console.log(r)
+          }).catch(r=>alert(r))
+        }
       },
       AddSingleAsExam(id) {
         if (this.examselect.single.indexOf(id) == -1) {

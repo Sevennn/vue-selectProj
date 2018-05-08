@@ -9,9 +9,9 @@
 
         <b-navbar-nav>
           <b-nav-item to="/sel/selectlist" tag="b-nav-item">选择题试卷</b-nav-item>
-          <b-nav-item to="/sel/prolist" tag="b-nav-item">题库</b-nav-item>
+          <b-nav-item to="/sel/prolist" tag="b-nav-item" v-if="role == 'teacher'">题库</b-nav-item>
         </b-navbar-nav>
-        <b-navbar-nav class="ml-auto" v-if="prolist">
+        <b-navbar-nav class="ml-auto" v-if="role == 'teacher'">
           <b-nav-item to="/sel/create/pro" tag="b-nav-item">添加题目</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
@@ -24,6 +24,13 @@
 <script>
 
 export default {
-  props: ['prolist']
+  data() {
+    return {
+      role: null
+    }
+  },
+  created() {
+    this.role = this.$cookies.get('role');
+  }
 }
 </script>
