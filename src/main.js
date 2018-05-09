@@ -6,8 +6,8 @@ import router from './router'
 
 import BootstrapVue from 'bootstrap-vue'
 
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import store from "./store/index"
 import mavonEditor from 'mavon-editor'
@@ -30,10 +30,9 @@ Vue.config.productionTip = false
 
 
 router.beforeEach((to, from, next)=>{
-  if (!VueCookies.get("token")) {
+  if (!VueCookies.get("token") && to.path != '/login') {
     next({
       path: '/login',
-      query: { redirect: to.fullPath }
     })
   } else {
     if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -42,7 +41,6 @@ router.beforeEach((to, from, next)=>{
       if (VueCookies.get("role")!="teacher") {
         next({
           path: '/sel/selectlist',
-          query: { redirect: to.fullPath }
         })
       } else {
         next()

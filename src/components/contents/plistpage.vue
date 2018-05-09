@@ -5,13 +5,19 @@
         <b-tab title="single" active>
           <template>
             <b-container>
-              <b-table show-empty stacked="md" :items="single" :fields="fields" :current-page="currentPage" :per-page="perPage">
+              <b-table show-empty stacked="md" :items="single" :fields="fields" :current-page="scurrentPage" :per-page="perPage">
+                <template slot="usedIn" slot-scope="row">
+                  <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
+                  <b-button size="sm" variant="primary" @click="GetBelongs(row.item.id)" v-b-modal.belongs>
+                    show list
+                  </b-button>
+                </template>
                 <template slot="actions" slot-scope="row">
                   <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
                   <b-button size="sm" @click.stop="row.toggleDetails();">
                     {{ row.detailsShowing ? 'Hide' : 'Show'}} details
                   </b-button>
-                  <b-button size="sm" variant="primary" @click="SetUpdate(row.item)" v-b-modal.update>
+                  <b-button size="sm" variant="primary" @click="SetUpdate(row.item)">
                     Update
                   </b-button>
                   <b-button size="sm" variant="danger">
@@ -43,7 +49,7 @@
               </b-table>
               <b-row>
                 <b-col md="6" class="my-1">
-                  <b-pagination :total-rows="single.length" :per-page="perPage" v-model="currentPage" class="my-0" />
+                  <b-pagination :total-rows="single.length" :per-page="perPage" v-model="scurrentPage" class="my-0" />
                 </b-col>
               </b-row>
             </b-container>
@@ -52,7 +58,8 @@
         <b-tab title="multiple">
           <template>
             <b-container>
-              <b-table show-empty stacked="md" :items="multi" :fields="fields" :current-page="currentPage" :per-page="perPage">
+              <b-table show-empty stacked="md" :items="multi" :fields="fields" :current-page="mcurrentPage" :per-page="perPage">
+
                 <template slot="actions" slot-scope="row">
                   <!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
                   <b-button size="sm" @click.stop="row.toggleDetails();">
@@ -90,7 +97,7 @@
               </b-table>
               <b-row>
                 <b-col md="6" class="my-1">
-                  <b-pagination :total-rows="multi.length" :per-page="perPage" v-model="currentPage" class="my-0" />
+                  <b-pagination :total-rows="multi.length" :per-page="perPage" v-model="mcurrentPage" class="my-0" />
                 </b-col>
               </b-row>
             </b-container>
@@ -103,6 +110,13 @@
         生成试题
       </b-button>
     </b-button-group>
+    <b-modal id="belongs" title="Used in"  class="modal-index" :ok-only="true">
+      <b-container>
+        <b-list-group>
+          <b-list-group-item v-for="item in usedlist">{{item.title}}</b-list-group-item>
+        </b-list-group>
+      </b-container>
+    </b-modal>
     <b-modal id="update" title="修改题目" @ok="showSelect" class="modal-index" @shown="UpdateMD(updateitem)">
       <b-form class="form-border" v-if="updateitem != null">
         <b-form-group>
@@ -185,6 +199,7 @@
   export default {
     data() {
       return {
+        usedlist: [],
         single: [],
         multi: [],
         tabIndex: 0,
@@ -206,19 +221,20 @@
           multi: [],
           title: ``,
         },
-        currentPage: 1,
+        scurrentPage: 1,
+        mcurrentPage: 1,
         perPage: 10,
         fields: [{
             key: 'brief',
             sortable: true
           },
           {
-            key: 'answer',
-            sortable: false
-          },
-          {
             key: 'type',
             sortable: true
+          },
+          {
+            key: 'usedIn',
+            sortable: false
           },
           {
             key: 'actions',
@@ -316,6 +332,14 @@
             alert("success!")
             this.$router.push({path:'/sel/selectlist'})
           }
+        ).catch(e=>alert(e))
+      },
+      GetBelongs(id) {
+        this.axios.post("/api/belongs", {id:id}).then(
+          r=>{this.usedlist = r.data;console.log(r.data);
+          this.$root.$emit('bv::show::modal','belongs')
+          }
+          
         ).catch(e=>alert(e))
       }
     },
